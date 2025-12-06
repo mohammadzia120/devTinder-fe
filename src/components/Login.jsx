@@ -9,8 +9,8 @@ const Login = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [email, setEmail] = useState("zia@gmail.com");
-  const [password, setPassword] = useState("Zia@123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
