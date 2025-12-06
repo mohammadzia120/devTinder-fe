@@ -31,14 +31,6 @@ const Body = () => {
   return (
     <div>
       <Navbar />
-      {/* <div class="flex justify-center">
-        <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => navigate("/login")}
-        >
-          Login to Continue
-        </button>
-      </div> */}
       <Outlet />{" "}
       {/*  Outlet replace the children components inside Body component */}
       <Footer />

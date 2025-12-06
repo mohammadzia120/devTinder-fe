@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
-import { removeFeed } from "../utils/feedSlice";
+import { removeFeeds } from "../utils/feedSlice";
+import { removeConnections } from "../utils/connectionSlice";
+import { removeRequests } from "../utils/requestSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -14,8 +16,10 @@ const Navbar = () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
-      dispatch(removeFeed());
-      return navigate("/login");
+      dispatch(removeFeeds());
+      dispatch(removeConnections());
+      dispatch(removeRequests());
+      navigate("/login");
     } catch (err) {
       console.error(err.message);
     }
@@ -24,8 +28,12 @@ const Navbar = () => {
     <div>
       <div className="navbar bg-base-300 shadow-sm">
         <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-xl">
-            👨‍💻 DevTinder
+          <Link
+            to={user ? "/feed" : "/"}
+            className="btn btn-ghost text-2xl font-extrabold bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 
+  bg-clip-text text-transparent drop-shadow-lg"
+          >
+            DevTinder
           </Link>
         </div>
         <div className="flex gap-2">
@@ -65,7 +73,7 @@ const Navbar = () => {
                     <Link to="/requests">Requests</Link>
                   </li>
                   <li>
-                    <Link to="/logout" onClick={handleLogout}>
+                    <Link to="/login" onClick={handleLogout}>
                       Logout
                     </Link>
                   </li>
