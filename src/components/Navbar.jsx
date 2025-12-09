@@ -26,7 +26,7 @@ const Navbar = () => {
   };
   return (
     <div>
-      <div className="navbar bg-base-300 shadow-sm">
+      <div className="navbar bg-base-300 shadow-lg px-6 sticky top-0 z-50">
         <div className="flex-1">
           <Link
             to={user ? "/feed" : "/"}
