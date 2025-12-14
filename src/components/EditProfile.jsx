@@ -5,6 +5,7 @@ import { BASE_URL } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import Loader from "./Loader";
 
 const EditProfile = ({ user }) => {
   const navigate = useNavigate();
@@ -17,9 +18,11 @@ const EditProfile = ({ user }) => {
   const [about, setAbout] = useState(user?.about);
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEdit = async () => {
     setError("");
+    setIsLoading(true);
     try {
       const user = await axios.patch(
         BASE_URL + "/profile/edit",
@@ -35,6 +38,8 @@ const EditProfile = ({ user }) => {
       //   navigate("/feed");
     } catch (err) {
       setError(err?.response?.data);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -47,6 +52,10 @@ const EditProfile = ({ user }) => {
       setAbout(user.about || "");
     }
   }, [user]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div className="flex justify-center my-10">
       <div className="flex justify-center mx-10">

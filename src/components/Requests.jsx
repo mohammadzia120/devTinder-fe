@@ -3,11 +3,13 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { addRequests, removeRequests } from "../utils/requestSlice";
+import Loader from "./Loader";
 
 const Requests = () => {
   const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const reviewRequest = async (status, id) => {
     try {
@@ -32,15 +34,23 @@ const Requests = () => {
       dispatch(addRequests(connections?.data?.requests));
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchRequests();
   }, []);
+
   if (!requests) return;
   if (requests.length === 0) {
     return <h2 className="flex justify-center my-10">No Requests found!</h2>;
   }
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <>
       <h1 className="text-xl font-bold m-auto text-center">Requests</h1>

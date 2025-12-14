@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BASE_URL } from "../utils/constants";
+import Loader from "./Loader";
 
 const Login = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,6 +18,7 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
       const user = await axios.post(
         BASE_URL + "/login",
@@ -28,26 +31,35 @@ const Login = () => {
         }
       );
       dispatch(addUser(user.data.data));
-      navigate("/feed");
+      return navigate("/feed");
     } catch (err) {
       setError(err.response.data.error || "Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleSignUp = async () => {
+    setIsLoading(true);
     try {
       const user = await axios.post(
         `${BASE_URL}/signup`,
         { firstName, lastName, email, password },
         { withCredentials: true }
       );
+
       console.log("userrrr", user);
       dispatch(addUser(user.data.data));
       return navigate("/profile");
     } catch (err) {
-      console.log(err);
       setError(err.response.data || "Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex justify-center my-10">
