@@ -8,6 +8,7 @@ import { appStore } from "./utils/appStore";
 import Home from "./components/Home";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
+import Chat from "./components/Chat";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/requests" element={<Requests />} />
+              <Route path="/chat/:targetUserId" element={<Chat />} />
+              <Route path="*" element={<h1>404 - Page Not Found</h1>} />
             </Route>
           </Routes>
         </BrowserRouter>

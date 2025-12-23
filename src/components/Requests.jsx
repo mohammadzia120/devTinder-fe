@@ -53,14 +53,14 @@ const Requests = () => {
 
   return (
     <>
-      <h1 className="text-xl font-bold m-auto text-center">Requests</h1>
+      <h1 className="text-xl font-bold my-3 text-center">Requests</h1>
       <div>
         {requests.map((request) => {
           const { _id, photoUrl, firstName, lastName, age, gender, about } =
             request.fromUserId;
           return (
             <div key={_id} className="flex justify-center px-3">
-              <div className="card w-full max-w-lg bg-base-300 shadow-lg my-3">
+              <div className="card w-full max-w-lg bg-base-300 shadow-lg my-1">
                 <div className="card-body p-5">
                   {/* Top Section */}
 

@@ -11,8 +11,8 @@ const Login = () => {
   const [lastName, setLastName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("zia@gmail.com");
+  const [password, setPassword] = useState("Zia@123456");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();

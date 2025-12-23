@@ -38,9 +38,11 @@ const Body = () => {
   //   return <Loader />;
   // }
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Outlet />{" "}
+      <div className="flex-grow">
+        <Outlet />{" "}
+      </div>
       {/*  Outlet replace the children components inside Body component */}
       <Footer />
     </div>
