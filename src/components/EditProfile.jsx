@@ -3,16 +3,18 @@ import axios from "axios";
 import UserCard from "./UserCard";
 import { BASE_URL } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import Loader from "./Loader";
+import uploadToS3 from "../utils/uploadToS3";
 
-const EditProfile = ({ user }) => {
-  const navigate = useNavigate();
+const EditProfile = () => {
+  const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [photoUrl, setPhotoUrl] = useState(user?.photoUrl);
+  const [file, setFile] = useState(null);
   const [age, setAge] = useState(user?.age);
   const [gender, setGender] = useState(user?.gender);
   const [about, setAbout] = useState(user?.about);
@@ -24,13 +26,18 @@ const EditProfile = ({ user }) => {
     setError("");
     setIsLoading(true);
     try {
-      const user = await axios.patch(
+      let uploadedPhotoUrl = photoUrl;
+      if (file) {
+        uploadedPhotoUrl = await uploadToS3(file);
+        setPhotoUrl(uploadedPhotoUrl);
+      }
+      const res = await axios.patch(
         BASE_URL + "/profile/edit",
-        { firstName, lastName, photoUrl, age, gender, about },
+        { firstName, lastName, photoUrl: uploadedPhotoUrl, age, gender, about },
         { withCredentials: true }
       );
-
-      dispatch(addUser(user?.data?.data));
+      // console.log("reduux data as a user ", user.date.data);
+      dispatch(addUser(res?.data?.data));
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
@@ -86,7 +93,7 @@ const EditProfile = ({ user }) => {
                 />
               </fieldset>
             </div>
-            <div className="">
+            {/* <div className="">
               <fieldset className="fieldset">
                 <legend className="fieldset-legend my-1">Photo</legend>
                 <input
@@ -97,7 +104,7 @@ const EditProfile = ({ user }) => {
                   onChange={(e) => setPhotoUrl(e.target.value)}
                 />
               </fieldset>
-            </div>
+            </div> */}
             <div className="">
               <fieldset className="fieldset">
                 <legend className="fieldset-legend my-1">Gender</legend>
@@ -134,7 +141,21 @@ const EditProfile = ({ user }) => {
                 />
               </fieldset>
             </div>
-
+            <div className="">
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend my-1">Photo</legend>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const selectedFile = e.target.files[0];
+                    if (selectedFile) {
+                      setFile(selectedFile);
+                    }
+                  }}
+                ></input>
+              </fieldset>
+            </div>
             <p className="text-red-200">{error}</p>
             {/* <p className="text-red-500">{error}</p> */}
             <div className="card-actions justify-center">
@@ -148,6 +169,7 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
       </div>
+      {console.log("file, ", photoUrl)}
       <UserCard user={{ firstName, lastName, age, gender, photoUrl, about }} />
       {showToast && (
         <div className="toast toast-top toast-center">

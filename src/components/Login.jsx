@@ -5,14 +5,17 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BASE_URL } from "../utils/constants";
 import Loader from "./Loader";
+import uploadToS3 from "../utils/uploadToS3";
 
 const Login = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [file, setFile] = useState(null);
+  const [email, setEmail] = useState("zia@gmail.com");
+  const [password, setPassword] = useState("Zia@123456");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -38,16 +41,20 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
   const handleSignUp = async () => {
     setIsLoading(true);
     try {
+      let uploadedPhotoUrl = photoUrl;
+      if (file) {
+        uploadedPhotoUrl = await uploadToS3(file);
+        setPhotoUrl(uploadedPhotoUrl);
+      }
       const user = await axios.post(
         `${BASE_URL}/signup`,
-        { firstName, lastName, email, password },
+        { firstName, lastName, email, password, photoUrl },
         { withCredentials: true }
       );
-
-      console.log("userrrr", user);
       dispatch(addUser(user.data.data));
       return navigate("/profile");
     } catch (err) {
@@ -92,6 +99,22 @@ const Login = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
+                </fieldset>
+              </div>
+              <div className="">
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend my-1">Photo</legend>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    label="Upload your Picture"
+                    onChange={(e) => {
+                      const selectedFile = e.target.files[0];
+                      if (selectedFile) {
+                        setFile(selectedFile);
+                      }
+                    }}
+                  ></input>
                 </fieldset>
               </div>
             </>
